@@ -13,17 +13,17 @@ Derived from [GDD.md](GDD.md). Tasks are ordered by dependency within each phase
 
 Blocking prerequisite for everything else. Do this first, once.
 
-- [ ] **0.1 Folder structure scaffold**
+- [x] **0.1 Folder structure scaffold**
   - **Description:** Create the `scenes/`, `scripts/`, `resources/`, `data/` tree exactly as laid out in [GDD § 7.1](GDD.md#71-suggested-scene-structure).
   - **DoD:** All folders exist (empty `.gitkeep` where needed); structure matches GDD 7.1 subfolder names.
   - **Test Case(s):** *(manual)* Open project in Godot FileSystem dock, confirm tree matches doc.
 
-- [ ] **0.2 Autoload singletons skeleton**
+- [x] **0.2 Autoload singletons skeleton**
   - **Description:** Create `GameState.gd`, `PlayerData.gd`, `EventBus.gd` per [GDD § 7.5](GDD.md#75-autoload-singletons-proposed), register as Autoloads in Project Settings. Empty/minimal fields for now — filled in as later tasks need them.
   - **DoD:** All three autoloads registered and load without error on empty project run. `EventBus` has no signals yet (added per-feature in later tasks, not pre-declared here).
   - **Test Case(s):** *(manual)* Run project, confirm no autoload errors in the Output panel.
 
-- [ ] **0.3 GUT test framework setup**
+- [x] **0.3 GUT test framework setup**
   - **Description:** Add the GUT addon for GDScript unit tests, create a `tests/` folder, wire a way to run tests (editor plugin panel is fine).
   - **DoD:** A trivial sample test (e.g. `assert_eq(1+1, 2)`) runs green inside Godot.
   - **Test Case(s):** *(manual)* Run GUT panel, sample test passes.
