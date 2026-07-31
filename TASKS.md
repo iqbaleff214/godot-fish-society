@@ -36,22 +36,22 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 1. Data Layer
 
-- [ ] **1.1 `FishSpecies` Resource script**
+- [x] **1.1 `FishSpecies` Resource script**
   - **Description:** `class_name FishSpecies extends Resource` per [GDD § 7.3](GDD.md#73-data-driven-content). Exported fields: `id: String`, `display_name: String`, `sprite_frames: SpriteFrames`, `size: Vector2`, `rarity: enum {COMMON, UNCOMMON, RARE, EXOTIC}`, `base_price: int`, `hunger_decay_rate: float`, `happiness_decay_rate: float`, `is_cleaning_crew: bool` (GDD § 5, shrimp/snails).
   - **DoD:** Script compiles, new `.tres` of type `FishSpecies` can be created from the editor's "New Resource" dialog with all fields visible/editable.
   - **Test Case(s):** *(manual)* Create one `.tres` in editor, set values, save, reload project, values persist.
 
-- [ ] **1.2 `DecorItem` Resource script**
+- [x] **1.2 `DecorItem` Resource script**
   - **Description:** `class_name DecorItem extends Resource`. Exported fields: `id: String`, `display_name: String`, `texture: Texture2D`, `footprint: Rect2`, `category: enum {PLANT, DECOR, GRAVEL, BACKGROUND}`, `price: int`, `currency_type: enum {COIN, GEM}`, `level_requirement: int`.
   - **DoD:** Same acceptance shape as 1.1.
   - **Test Case(s):** *(manual)* Same as 1.1 for `DecorItem`.
 
-- [ ] **1.3 Starter content: 5–8 fish species + placeholder art**
+- [x] **1.3 Starter content: 5–8 fish species + placeholder art**
   - **Description:** Create 5–8 `.tres` `FishSpecies` resources (e.g. Guppy, Neon Tetra, Goldfish, Betta, Corydoras — pick from [GDD § 5](GDD.md#5-fish-species--rarity) table) using placeholder colored-shape `SpriteFrames` (e.g. tinted circle/oval per species so they're visually distinguishable). Include at least one `is_cleaning_crew = true` entry (e.g. shrimp).
   - **DoD:** All `.tres` files exist under `resources/fish_species/`, each with a `# TODO: asset — replace placeholder sprite for <species>` note (put it in the resource's editor description field, since `.tres` can't hold GDScript comments).
   - **Test Case(s):** *(manual)* Instance each species in a blank scene, confirm distinct placeholder sprite renders.
 
-- [ ] **1.4 Starter content: decor placeholders**
+- [x] **1.4 Starter content: decor placeholders**
   - **Description:** Create ~6–10 `.tres` `DecorItem` resources spanning all four categories (at least 1 background, 2 gravel/plant, rest decor) with placeholder flat-color textures sized to their footprint.
   - **DoD:** Files exist under `resources/decor_items/`, each flagged with the same TODO convention as 1.3.
   - **Test Case(s):** *(manual)* Instance each in a blank scene, confirm placeholder texture renders at correct footprint size.

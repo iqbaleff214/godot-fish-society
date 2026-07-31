@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DecorItem" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/tank/decor_item.gd" id="1_script"]
+
+[sub_resource type="Gradient" id="Gradient_1"]
+colors = PackedColorArray(0.75, 0.25, 0.3, 1, 0.75, 0.25, 0.3, 0)
+
+[sub_resource type="GradientTexture2D" id="Texture_1"]
+gradient = SubResource("Gradient_1")
+width = 20
+height = 36
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[resource]
+resource_name = "TODO: asset — replace placeholder texture for Red Plant"
+script = ExtResource("1_script")
+id = "red_plant"
+display_name = "Red Plant"
+texture = SubResource("Texture_1")
+footprint = Rect2(0, 0, 20, 36)
+category = 0
+price = 45
+currency_type = 0
+level_requirement = 1

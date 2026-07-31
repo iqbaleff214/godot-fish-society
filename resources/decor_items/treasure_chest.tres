@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DecorItem" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/tank/decor_item.gd" id="1_script"]
+
+[sub_resource type="Gradient" id="Gradient_1"]
+colors = PackedColorArray(0.85, 0.65, 0.15, 1, 0.85, 0.65, 0.15, 0)
+
+[sub_resource type="GradientTexture2D" id="Texture_1"]
+gradient = SubResource("Gradient_1")
+width = 32
+height = 24
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[resource]
+resource_name = "TODO: asset — replace placeholder texture for Treasure Chest"
+script = ExtResource("1_script")
+id = "treasure_chest"
+display_name = "Treasure Chest"
+texture = SubResource("Texture_1")
+footprint = Rect2(0, 0, 32, 24)
+category = 1
+price = 200
+currency_type = 1
+level_requirement = 3
