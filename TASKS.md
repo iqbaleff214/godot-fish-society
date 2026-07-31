@@ -58,25 +58,26 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 2. Tank Scene & Rendering
 
-- [ ] **2.1 `Tank.tscn` — water bounds, floor, glass**
+- [x] **2.1 `Tank.tscn` — water bounds, floor, glass**
   - **Description:** Build the tank container: a `Rect2`-defined water/swim area (exported on a `tank.gd` script), a floor `Area2D`/`Node2D` for decor anchoring, and placeholder glass/background (flat rect, `# TODO: asset — tank glass/backdrop art`).
   - **DoD:** Scene instances cleanly, exposes `get_water_bounds() -> Rect2` and `get_floor_y() -> float` for other systems to query.
   - **Test Case(s):** *(unit)* Test `get_water_bounds()` returns the configured `Rect2` given known export values.
 
-- [ ] **2.2 `TankView.tscn` root gameplay scene**
+- [x] **2.2 `TankView.tscn` root gameplay scene**
   - **Description:** Root scene combining `Tank.tscn` + HUD anchor point + camera. Set as the project's main scene once HUD exists (task 7.1) — until then just build the container.
   - **DoD:** Scene runs standalone (`F6`) showing an empty tank with placeholder background.
   - **Test Case(s):** *(manual)* Run scene, tank renders, no errors.
 
-- [ ] **2.3 Decoration placement system**
+- [x] **2.3 Decoration placement system**
   - **Description:** `Decoration.tscn` base scene + `decoration_placement.gd` supporting: drag-to-move within floor area, footprint-based overlap check against other placed decor (reject overlapping placement, per [GDD § 4.1](GDD.md#41-the-tank)), remove/return-to-inventory action.
   - **DoD:** Player can drag a decor instance around the tank floor; dropping it on an occupied footprint snaps back / shows invalid-placement feedback (placeholder: red tint) instead of overlapping.
   - **Test Case(s):** *(unit)* Test overlap-detection function with known `Rect2` pairs (overlapping / non-overlapping / edge-touching cases). *(manual)* Drag two decor items to overlap, confirm rejection.
 
-- [ ] **2.4 Y-sort depth ordering**
+- [x] **2.4 Y-sort depth ordering**
   - **Description:** Ensure fish and decor render in correct front/back order based on vertical position (`YSort`/`Node2D.y_sort_enabled`), per [GDD § 8](GDD.md#8-art--audio-direction).
   - **DoD:** A fish swimming behind a tall decor item visually occludes correctly when it crosses the decor's Y position.
   - **Test Case(s):** *(manual)* Place tall decor, move fish through it, confirm draw order flips correctly at the crossing point.
+  - **Note:** Mechanism implemented — `Tank.tscn`'s `Contents` node has `y_sort_enabled = true` and is the shared parent both `Decoration` (2.3) and `Fish` (3.5, not yet built) get added under, per [GDD § 8](GDD.md#8-art--audio-direction). Full manual confirmation with an actual fish crossing decor is blocked on task 3.1 existing — re-run that manual test case once fish are in the tank.
 
 ### 3. Fish System
 

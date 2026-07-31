@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/tank/tank.gd" id="1_script"]
+
+[node name="Tank" type="Node2D"]
+script = ExtResource("1_script")
+water_bounds = Rect2(0, 0, 400, 200)
+floor_y = 200.0
+
+[node name="Glass" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 400, 0, 400, 240, 0, 240)
+color = Color(0.55, 0.75, 0.9, 1)
+
+[node name="Contents" type="Node2D" parent="."]
+y_sort_enabled = true

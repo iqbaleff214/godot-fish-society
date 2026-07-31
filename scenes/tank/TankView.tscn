@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/tank/Tank.tscn" id="1_tank"]
+
+[node name="TankView" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(200, 120)
+current = true
+
+[node name="Tank" parent="." instance=ExtResource("1_tank")]
+
+[node name="HUDAnchor" type="CanvasLayer" parent="."]
