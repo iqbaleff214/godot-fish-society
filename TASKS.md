@@ -81,27 +81,27 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 3. Fish System
 
-- [ ] **3.1 `Fish.tscn` base scene + state machine**
+- [x] **3.1 `Fish.tscn` base scene + state machine**
   - **Description:** One reusable scene driven by a `FishSpecies` resource (per [GDD § 7.3](GDD.md#73-data-driven-content) — no per-species scenes). `fish.gd` implements a state machine: `Idle → Swim → Eat → React` per [GDD § 7.2](GDD.md#72-fish-behavior-2d-swim-ai).
   - **DoD:** Instancing `Fish.tscn` and calling `setup(species: FishSpecies)` configures sprite/size/behavior params from that resource. States transition without illegal transitions (e.g. can't go straight from `Eat` to `React` without passing through `Idle`/`Swim` — document the allowed transition table in a code comment).
   - **Test Case(s):** *(unit)* Test state machine transition table directly (given current state + event, assert resulting state matches spec). *(manual)* Spawn fish, observe it idles and swims without visual glitches.
 
-- [ ] **3.2 Swim AI (steering)**
+- [x] **3.2 Swim AI (steering)**
   - **Description:** In `Swim` state, pick a random target point inside `Tank.get_water_bounds()`, move toward it (`move_toward`/tween), clamp to bounds, flip sprite horizontally based on movement direction, per [GDD § 7.2](GDD.md#72-fish-behavior-2d-swim-ai).
   - **DoD:** Fish never visually exits the water `Rect2`. Sprite faces movement direction correctly both ways.
   - **Test Case(s):** *(unit)* Test bounds-clamping function with points outside/inside/on-edge of a known `Rect2`. *(manual)* Watch a fish for ~1 min, confirm it stays in bounds and flips correctly.
 
-- [ ] **3.3 `fish_stats.gd` — Hunger/Happiness/Cleanliness-sensitivity**
+- [x] **3.3 `fish_stats.gd` — Hunger/Happiness/Cleanliness-sensitivity**
   - **Description:** Pure-logic component: three 0–100 stats with per-species decay rates (from `FishSpecies`), decayed by elapsed real time (not per-frame ticking — see task 8.3 for the load-time version of this same math). Expose `apply_feed()`, `apply_pet()`, `apply_cleanliness(tank_cleanliness: float)`, `decay(delta_seconds: float)`.
   - **DoD:** Stats clamp to `[0, 100]`. Decay math is a single testable pure function independent of `_process`.
   - **Test Case(s):** *(unit)* Given known start stats + decay rate + elapsed seconds, assert exact resulting stat value. *(unit)* Assert clamping at 0 and 100 boundaries. *(unit)* Assert `apply_feed()` restores hunger and gives the documented small happiness bump.
 
-- [ ] **3.4 Mood state derivation**
+- [x] **3.4 Mood state derivation**
   - **Description:** Pure function mapping `(hunger, happiness)` → `Happy | Neutral | Hungry | Sad | Sick` enum per [GDD § 4.2](GDD.md#42-fish-the-pets). Wire to a placeholder mood icon above the fish (`# TODO: asset — mood icon set`) and swap swim animation speed/energy for Happy vs Sad/Sick per GDD (energetic vs sluggish).
   - **DoD:** Documented thresholds table exists in code comment; icon updates live as stats change; no fish ever hard-fails (no "dead" state exists anywhere in code, per Pillar 1).
   - **Test Case(s):** *(unit)* Table-driven test: for each documented threshold boundary, assert correct mood enum returned. *(manual)* Starve a fish's hunger to 0 via debug, confirm it reaches Sad/Sick visual, not removed/hidden permanently, and recovers once fed.
 
-- [ ] **3.5 Fish spawn/despawn via TankManager**
+- [x] **3.5 Fish spawn/despawn via TankManager**
   - **Description:** `tank_manager.gd` reads owned fish list from `PlayerData`, instances/configures `Fish.tscn` per entry on tank load, handles adding a newly-purchased fish at runtime.
   - **DoD:** Tank on load shows exactly the fish present in `PlayerData`, correctly named and stat-restored (depends on task 8 for persisted stats, stub with defaults until then).
   - **Test Case(s):** *(unit)* Given a mock `PlayerData` fish list, assert `TankManager` requests the correct count/species of spawns (test the spawn-list resolution logic, not actual node instancing). *(manual)* Add fish via debug call, confirm it appears and swims.

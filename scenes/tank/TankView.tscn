@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/tank/Tank.tscn" id="1_tank"]
+[ext_resource type="Script" path="res://scripts/tank/tank_manager.gd" id="2_tank_manager"]
 
 [node name="TankView" type="Node2D"]
 
@@ -9,5 +10,8 @@ position = Vector2(200, 120)
 current = true
 
 [node name="Tank" parent="." instance=ExtResource("1_tank")]
+
+[node name="TankManager" type="Node" parent="."]
+script = ExtResource("2_tank_manager")
 
 [node name="HUDAnchor" type="CanvasLayer" parent="."]
