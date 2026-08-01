@@ -14,17 +14,17 @@ config/name="fish-society"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
-[display]
-
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
-
 [autoload]
 
 GameState="*res://data/GameState.gd"
 PlayerData="*res://data/PlayerData.gd"
 EventBus="*res://data/EventBus.gd"
 SaveManager="*res://scripts/save/save_manager.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 

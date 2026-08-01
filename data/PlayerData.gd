@@ -8,7 +8,16 @@ extends Node
 ## optional (TankManager.resolve_spawn_list defaults to 100.0 for each when
 ## absent) so freshly-purchased fish (ShopManager) can keep appending the
 ## bare {"species_id", "name"} shape unchanged (TASKS.md 8.1).
-var owned_fish: Array[Dictionary] = []
+##
+## Defaults to one starter Guppy — task 8.2's own DoD calls for "sensible
+## defaults (starter fish, zero currency)" on a fresh install. This default
+## only ever takes effect when no save file exists yet: SaveManager.load_game()
+## overwrites it with the real saved array (however many/few fish that is)
+## whenever a save is actually found (TASKS.md 8.2/9.1 — without this, a
+## brand new player has 0 fish and 0 coins and cannot do anything at all).
+var owned_fish: Array[Dictionary] = [
+	{"species_id": "guppy", "name": "Guppy"},
+]
 
 ## Placed decor layout — TankManager is the live source of truth while a
 ## tank is loaded; SaveManager refreshes this from it before writing a save
