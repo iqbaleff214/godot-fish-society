@@ -76,6 +76,7 @@ func _on_inventory_closed() -> void:
 	GameState.decorate_mode_active = false
 	top_bar.visible = true
 	button_row.visible = true
+	SaveManager.save_game()  # TASKS.md 8.4 autosave trigger: after decorate-mode exit
 
 
 func _close_all_panels() -> void:

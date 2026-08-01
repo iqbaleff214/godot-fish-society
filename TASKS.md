@@ -178,22 +178,23 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 8. Save System
 
-- [ ] **8.1 `PlayerSave` schema**
+- [x] **8.1 `PlayerSave` schema**
   - **Description:** Define the serializable shape per [GDD § 7.4](GDD.md#74-save-system): tank layout, owned fish (species id + name + stats + last-interaction timestamps), inventory, currency, level/XP, quest progress, `last_saved_unix_time`.
   - **DoD:** Schema documented (comment block or small `.md` note) so every later system knows what it owns in the save file.
   - **Test Case(s):** *(unit)* Round-trip test: serialize a populated mock `PlayerSave` to JSON/Resource and back, assert deep equality.
+  - **Note:** JSON via `FileAccess`, not `ResourceSaver` — avoids Resource-in-Resource serialization complexity for `FishSpecies`/`DecorItem` references, and matches the "store id string, re-resolve via `load_all()`" convention already used by `PlayerData.owned_fish` (task 3.5). Used one global `last_saved_unix_time` for offline-decay purposes (task 8.3 only ever references a single timestamp) rather than per-fish "last-interaction timestamps" — nothing else in the codebase would consume per-fish granularity. Closed two real data-layer gaps this task exposed: nothing tracked *placed* decor as data at all (only live scene nodes) — added `PlayerData.tank_layout` and `TankManager.get_placed_decor_snapshot()`/`load_tank_layout_from_player_data()`; and per-fish stats were never persisted — extended `PlayerData.owned_fish` entries with optional `hunger`/`happiness`/`cleanliness_sensitivity` keys (default 100.0, so existing code appending bare `{"species_id", "name"}` still works).
 
-- [ ] **8.2 `SaveManager` save/load**
+- [x] **8.2 `SaveManager` save/load**
   - **Description:** `save_manager.gd` autoload-callable functions `save_game()` / `load_game()` using `FileAccess` (JSON) or `ResourceSaver`, per GDD § 7.4.
   - **DoD:** Fresh install with no save file loads sensible defaults (starter fish, zero currency) without error.
   - **Test Case(s):** *(unit)* Save then load, assert `PlayerData` state matches pre-save state exactly. *(unit)* Load with no file present, assert defaults applied without throwing.
 
-- [ ] **8.3 Offline stat decay on load**
+- [x] **8.3 Offline stat decay on load**
   - **Description:** On load, compute elapsed real time since `last_saved_unix_time` and apply stat decay (task 3.3) / coin accrual (task 5.2) for that whole elapsed window in one shot — not a catch-up loop, a direct formula application, per GDD § 7.4.
   - **DoD:** Closing the game for a simulated long period and reopening produces the same fish stats as if decay had run continuously (within the documented decay formula, not literally re-simulated tick by tick).
   - **Test Case(s):** *(unit)* Mock a `last_saved_unix_time` far in the past, assert resulting stats match direct formula output for that elapsed duration, including clamping (task 3.3) and coin cap (task 5.2).
 
-- [ ] **8.4 Autosave triggers**
+- [x] **8.4 Autosave triggers**
   - **Description:** Call `save_game()` on: app quit (`NOTIFICATION_WM_CLOSE_REQUEST`), after purchases, after decorate-mode exit, and on a periodic timer (e.g. every 2 min) as a safety net.
   - **DoD:** Force-quitting mid-session loses at most ~2 minutes of progress, never more.
   - **Test Case(s):** *(manual)* Make a change, force-quit without graceful exit, relaunch, confirm change persisted (or is within the documented autosave window).

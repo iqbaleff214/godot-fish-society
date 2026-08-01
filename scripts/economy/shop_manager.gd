@@ -35,6 +35,7 @@ func purchase_fish(species: FishSpecies) -> bool:
 	PlayerData.owned_fish.append({"species_id": species.id, "name": fish_name})
 	if tank_manager != null:
 		tank_manager.spawn_fish(species, fish_name)
+	EventBus.item_purchased.emit()
 	return true
 
 
@@ -47,6 +48,7 @@ func purchase_decor(item: DecorItem) -> bool:
 		return false
 
 	PlayerData.add_to_inventory(item)
+	EventBus.item_purchased.emit()
 	return true
 
 

@@ -3,9 +3,18 @@ extends Node
 ## (currency, level/XP, owned fish/decor, quest progress).
 ## Fields added per-feature as later tasks need them (see TASKS.md Phase 1).
 
-## Each entry: {"species_id": String, "name": String}. Stats aren't persisted
-## yet (TASKS.md 3.5 stubs to FishStats defaults) — that's task 8's job.
+## Each entry: {"species_id": String, "name": String, "hunger": float,
+## "happiness": float, "cleanliness_sensitivity": float}. The stat keys are
+## optional (TankManager.resolve_spawn_list defaults to 100.0 for each when
+## absent) so freshly-purchased fish (ShopManager) can keep appending the
+## bare {"species_id", "name"} shape unchanged (TASKS.md 8.1).
 var owned_fish: Array[Dictionary] = []
+
+## Placed decor layout — TankManager is the live source of truth while a
+## tank is loaded; SaveManager refreshes this from it before writing a save
+## and restores it via TankManager on load (TASKS.md 8.1/8.2). Each entry:
+## {"item_id": String, "position_x": float, "position_y": float}.
+var tank_layout: Array[Dictionary] = []
 
 ## Owned-but-unplaced decor (TASKS.md 5.4). Duplicates are fine — owning
 ## multiple copies of the same DecorItem is valid, each entry is just a

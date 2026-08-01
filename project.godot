@@ -24,6 +24,7 @@ window/stretch/aspect="expand"
 GameState="*res://data/GameState.gd"
 PlayerData="*res://data/PlayerData.gd"
 EventBus="*res://data/EventBus.gd"
+SaveManager="*res://scripts/save/save_manager.gd"
 
 [editor_plugins]
 
