@@ -1,10 +1,13 @@
 class_name TankManager
 extends Node
 ## Spawns/despawns Fish instances into a Tank from PlayerData.owned_fish
-## (TASKS.md 3.5). Add as a sibling of a Tank node; resolves it via
-## tank_path by default ("../Tank").
+## (TASKS.md 3.5), and places DecorItems out of PlayerData.inventory into
+## the tank (TASKS.md 5.4) — matches GDD § 7.1's "spawns fish/decor" for
+## this file. Add as a sibling of a Tank node; resolves it via tank_path
+## by default ("../Tank").
 
 const FISH_SCENE: PackedScene = preload("res://scenes/tank/Fish.tscn")
+const DECORATION_SCENE: PackedScene = preload("res://scenes/tank/Decoration.tscn")
 
 @export var tank_path: NodePath = ^"../Tank"
 @onready var tank: Tank = get_node(tank_path)
@@ -42,18 +45,9 @@ static func resolve_spawn_list(owned_fish: Array, directory: Dictionary) -> Arra
 
 static func build_default_species_directory() -> Dictionary:
 	var directory: Dictionary = {}
-	var dir := DirAccess.open("res://resources/fish_species")
-	if dir == null:
-		return directory
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tres"):
-			var species: FishSpecies = load("res://resources/fish_species/" + file_name)
-			if species != null and species.id != "":
-				directory[species.id] = species
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for species in FishSpecies.load_all():
+		if species.id != "":
+			directory[species.id] = species
 	return directory
 
 
@@ -83,3 +77,25 @@ func _spawn(species: FishSpecies, fish_name: String) -> Fish:
 	fish.setup(species)
 	_spawned.append(fish)
 	return fish
+
+
+## Takes item out of PlayerData.inventory and places it in the tank
+## (TASKS.md 5.4). Returns null (no-op) if the item wasn't actually in
+## inventory — e.g. double-clicked or already placed elsewhere.
+func place_decor_from_inventory(item: DecorItem, at_position: Vector2) -> Decoration:
+	if not PlayerData.remove_from_inventory(item):
+		return null
+	var decoration: Decoration = DECORATION_SCENE.instantiate()
+	tank.get_contents_node().add_child(decoration)
+	decoration.position = at_position
+	decoration.setup(item)
+	decoration.removed.connect(_on_decoration_removed)
+	return decoration
+
+
+## A Decoration placed via place_decor_from_inventory() returns to
+## inventory when removed (TASKS.md 5.4's "removing a placed item returns
+## it to inventory"). Decoration.request_remove() emits this before
+## queue_free(), so decoration.item is still valid here.
+func _on_decoration_removed(decoration: Decoration) -> void:
+	PlayerData.add_to_inventory(decoration.item)

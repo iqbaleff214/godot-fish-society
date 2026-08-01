@@ -125,22 +125,23 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 5. Economy
 
-- [ ] **5.1 Currency system**
+- [x] **5.1 Currency system**
   - **Description:** `PlayerData` fields `coins: int`, `gems: int`. `EventBus` signals `currency_changed(type, new_amount)`. Guard against negative balances.
   - **DoD:** Spending more than available balance is rejected (returns `false`/error), never goes negative.
   - **Test Case(s):** *(unit)* Test spend function: sufficient balance succeeds and deducts exact amount; insufficient balance fails and balance unchanged.
 
-- [ ] **5.2 Passive coin generation**
+- [x] **5.2 Passive coin generation**
   - **Description:** Per [GDD § 4.3](GDD.md#43-currency--economy): coins accrue per happy fish per hour, capped at a documented max. Compute via elapsed-time-since-last-collection (same load-time-delta pattern as task 8.3), not a live per-frame timer.
   - **DoD:** Documented formula (rate per happy fish/hour, cap value) lives in a code comment; function is pure and independently callable.
   - **Test Case(s):** *(unit)* Given N happy fish + elapsed hours, assert generated coins matches formula. *(unit)* Assert cap is respected when elapsed time would exceed it.
 
-- [ ] **5.3 Shop UI + purchase flow**
+- [x] **5.3 Shop UI + purchase flow**
   - **Description:** Tabbed catalog (Fish / Decor / Food per [GDD § 4.3](GDD.md#43-currency--economy)) listing available `FishSpecies`/`DecorItem` resources, filtered by `level_requirement <= PlayerData.level`. Purchase deducts currency (task 5.1) and adds to inventory (task 5.4) or fish list (task 3.5).
   - **DoD:** Locked (level-gated) items show as visibly locked, not purchasable. Successful purchase updates HUD currency display live.
   - **Test Case(s):** *(unit)* Test catalog-filter function against mock player level. *(manual)* Attempt purchase with insufficient funds, confirm rejected with feedback; purchase with sufficient funds, confirm item appears in inventory/tank.
+  - **Note:** Fish and Decor tabs only — no Food tab. GDD § 4.3 names a Food tab, but no `FoodItem`/consumable Resource type was ever defined in the data layer (task 1.x only created `FishSpecies`/`DecorItem`); feeding (task 4.1) works standalone with a free placeholder food drop. Adding purchasable food would need its own data-layer task. Also fixed a coherence gap from task 1.1: `FishSpecies` had no `level_requirement`/`currency_type` fields even though this task's DoD requires level-gating both catalogs and GDD § 5 specifies rare fish are gem-priced — added both fields (mirroring `DecorItem`) and set values on all 8 starter `.tres` files (Common/Uncommon = coins, Rare = gems, re-priced Angelfish/Clownfish off the old coin-scale numbers to a sane gem scale).
 
-- [ ] **5.4 Inventory system**
+- [x] **5.4 Inventory system**
   - **Description:** Owned-but-unplaced `DecorItem`s tracked in `PlayerData.inventory`, with a UI panel to select an item and enter Decorate Mode (task 2.3) to place it.
   - **DoD:** Purchased decor appears in inventory immediately; placing it removes it from inventory and adds it to tank layout; removing a placed item returns it to inventory.
   - **Test Case(s):** *(unit)* Test inventory add/remove-on-place/return-on-remove logic against mock data. *(manual)* Full purchase → place → pick-up → re-place cycle.
