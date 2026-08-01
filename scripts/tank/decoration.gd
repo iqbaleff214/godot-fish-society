@@ -60,6 +60,8 @@ func _get_sibling_footprints() -> Array[Rect2]:
 
 
 func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if not GameState.decorate_mode_active:
+		return
 	if not (event is InputEventMouseButton):
 		return
 	var mb := event as InputEventMouseButton
@@ -75,6 +77,10 @@ func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _dragging:
+		return
+	if not GameState.decorate_mode_active:
+		_dragging = false
+		_end_drag()
 		return
 	if event is InputEventMouseMotion:
 		global_position = get_global_mouse_position() - _drag_offset

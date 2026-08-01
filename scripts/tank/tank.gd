@@ -83,12 +83,13 @@ func _count_cleaning_crew() -> int:
 
 
 func _on_glass_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	# GlassClickArea deliberately spans the whole tank (you can wipe the
-	# glass anywhere), so it can overlap Fish/Decoration click areas at the
-	# same point. Bail if one of those more-specific handlers already
-	# claimed this input. (No UI tool-selection exists yet — TASKS.md 5.3/7.x
-	# — to explicitly disambiguate "feed" vs "clean" vs "pet" intent; this
-	# ordering guard is the best available MVP-placeholder resolution.)
+	# Care actions (clean/feed/pet) only apply outside Decorate Mode
+	# (TASKS.md 7.4). GlassClickArea also deliberately spans the whole tank
+	# (you can wipe the glass anywhere), so it can overlap Fish/Decoration
+	# click areas at the same point — bail if one of those more-specific
+	# handlers already claimed this input.
+	if GameState.decorate_mode_active:
+		return
 	if get_viewport().is_input_handled():
 		return
 	if not (event is InputEventMouseButton):

@@ -2,9 +2,10 @@ class_name FeedingManager
 extends Node
 ## Feed action: click in the tank's water to drop food; the nearest fish
 ## below HUNGER_THRESHOLD swims to it and eats (TASKS.md 4.1).
-## MVP placeholder: any click in the water drops food. Once a food/inventory
-## selection UI exists (5.3/7.2), this should gate on "a food item is
-## selected" first rather than firing on every click.
+## MVP placeholder: any click in the water drops food (gated off only by
+## Decorate Mode, TASKS.md 7.4). Once a food-selection UI exists, this
+## should also gate on "a food item is selected" rather than firing on
+## every click.
 
 const FOOD_SCENE: PackedScene = preload("res://scenes/tank/Food.tscn")
 const HUNGER_THRESHOLD := 90.0
@@ -14,6 +15,8 @@ const HUNGER_THRESHOLD := 90.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if GameState.decorate_mode_active:
+		return
 	if not (event is InputEventMouseButton):
 		return
 	var mb := event as InputEventMouseButton

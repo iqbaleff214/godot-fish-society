@@ -1,14 +1,14 @@
 class_name ShopUI
 extends Control
-## Shop panel controller (TASKS.md 5.3): tab switch, full catalog list with
-## locked items shown-but-disabled, purchase attempt + feedback. Task 7.2
-## owns polishing this into the full HUD/modal-stacking flow — this is the
-## functional core.
+## Shop panel controller (TASKS.md 5.3/7.2): tab switch, full catalog list
+## with locked items shown-but-disabled, purchase attempt + feedback,
+## single-modal coordination via HUD (open()/close() called externally).
 
 enum Tab { FISH, DECOR }
 
-@export var shop_manager_path: NodePath = ^"../../ShopManager"
-@onready var shop_manager: ShopManager = get_node_or_null(shop_manager_path)
+## Assigned externally by tank_view.gd after instancing (TASKS.md 7.1) —
+## simpler and less fragile than a NodePath tied to exact scene nesting depth.
+var shop_manager: ShopManager
 
 @onready var fish_tab_button: Button = $Panel/Margin/VBox/TabRow/FishTabButton
 @onready var decor_tab_button: Button = $Panel/Margin/VBox/TabRow/DecorTabButton
@@ -26,12 +26,6 @@ func _ready() -> void:
 	decor_tab_button.pressed.connect(_switch_tab.bind(Tab.DECOR))
 	close_button.pressed.connect(close)
 	dimmer.gui_input.connect(_on_dimmer_input)
-
-	# Placeholder open-trigger until task 7.1's real HUD exists — see
-	# TankView.tscn's "OpenShopButton" sibling under HUDAnchor.
-	var trigger := get_parent().get_node_or_null("OpenShopButton")
-	if trigger != null:
-		trigger.pressed.connect(open)
 
 
 func open() -> void:
@@ -55,10 +49,14 @@ func _switch_tab(tab: Tab) -> void:
 
 
 func _refresh_list() -> void:
-	# Immediate free (not queue_free) so back-to-back tab switches within the
-	# same frame can't see stale not-yet-freed buttons via get_children().
+	# remove_child() first so get_children() reflects the change immediately
+	# (avoids stale-children bugs on back-to-back refreshes within one
+	# frame), then queue_free() to actually destroy them — plain free()
+	# can error if this ever runs from inside one of these buttons' own
+	# "pressed" handler (Godot won't free an object mid-signal-call).
 	for child in item_list.get_children():
-		child.free()
+		item_list.remove_child(child)
+		child.queue_free()
 
 	if shop_manager == null:
 		return

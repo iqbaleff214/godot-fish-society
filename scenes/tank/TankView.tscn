@@ -1,12 +1,14 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/tank/Tank.tscn" id="1_tank"]
 [ext_resource type="Script" path="res://scripts/tank/tank_manager.gd" id="2_tank_manager"]
 [ext_resource type="Script" path="res://scripts/tank/feeding_manager.gd" id="3_feeding_manager"]
 [ext_resource type="Script" path="res://scripts/economy/shop_manager.gd" id="4_shop_manager"]
-[ext_resource type="PackedScene" path="res://scenes/ui/Shop.tscn" id="5_shop_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="5_hud"]
+[ext_resource type="Script" path="res://scripts/tank/tank_view.gd" id="6_tank_view"]
 
 [node name="TankView" type="Node2D"]
+script = ExtResource("6_tank_view")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(200, 120)
@@ -25,11 +27,4 @@ script = ExtResource("4_shop_manager")
 
 [node name="HUDAnchor" type="CanvasLayer" parent="."]
 
-[node name="OpenShopButton" type="Button" parent="HUDAnchor"]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 88.0
-offset_bottom = 40.0
-text = "Shop"
-
-[node name="Shop" parent="HUDAnchor" instance=ExtResource("5_shop_ui")]
+[node name="HUD" parent="HUDAnchor" instance=ExtResource("5_hud")]

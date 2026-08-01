@@ -134,6 +134,8 @@ func _process_swim(delta: float) -> void:
 
 
 func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if GameState.decorate_mode_active:
+		return
 	if not (event is InputEventMouseButton):
 		return
 	var mb := event as InputEventMouseButton

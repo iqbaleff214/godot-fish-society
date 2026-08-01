@@ -161,18 +161,20 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 7. UI / HUD
 
-- [ ] **7.1 HUD**
+- [x] **7.1 HUD**
   - **Description:** Persistent overlay: coin/gem counters (bound to task 5.1 signal), XP bar (bound to task 6.1), notification bell (stub — no content yet, just visual + click target for Phase 2/3), per [GDD § 6](GDD.md#6-uiux-flow).
   - **DoD:** HUD values update live and correctly on currency/XP change signals, no manual polling.
   - **Test Case(s):** *(manual)* Trigger a purchase and a feed action, confirm HUD numbers update immediately and correctly.
 
-- [ ] **7.2 Shop panel** — UI wrapper around task 5.3 logic. **DoD:** matches [GDD § 6](GDD.md#6-uiux-flow) flow (tabs, single modal, closable). **Test Case(s):** *(manual)* open/close/tab-switch, no state leaks between sessions.
+- [x] **7.2 Shop panel** — UI wrapper around task 5.3 logic. **DoD:** matches [GDD § 6](GDD.md#6-uiux-flow) flow (tabs, single modal, closable). **Test Case(s):** *(manual)* open/close/tab-switch, no state leaks between sessions.
 
-- [ ] **7.3 Inventory panel** — UI wrapper around task 5.4 logic. **DoD/Test:** same shape as 7.2, scoped to inventory.
+- [x] **7.3 Inventory panel** — UI wrapper around task 5.4 logic. **DoD/Test:** same shape as 7.2, scoped to inventory.
+  - **Note:** Combined with 7.4 into one `InventoryUI` — selecting an inventory item both places it in the tank and is the entry point into Decorate Mode (they're the same user action per 5.4's own description: "a UI panel to select an item and enter Decorate Mode to place it").
 
-- [ ] **7.4 Decorate Mode UI** — entry/exit toggle, drag controls surfaced from task 2.3. **DoD:** entering hides HUD clutter per GDD "one panel open at a time" rule; exiting persists layout to `PlayerData` (stub until task 8 exists, verify wiring later). **Test Case(s):** *(manual)* Enter mode, move item, exit, re-enter, layout preserved in-session.
+- [x] **7.4 Decorate Mode UI** — entry/exit toggle, drag controls surfaced from task 2.3. **DoD:** entering hides HUD clutter per GDD "one panel open at a time" rule; exiting persists layout to `PlayerData` (stub until task 8 exists, verify wiring later). **Test Case(s):** *(manual)* Enter mode, move item, exit, re-enter, layout preserved in-session.
+  - **Note:** Added `GameState.decorate_mode_active` and gated `Decoration` drag/remove, `Fish` pet, `FeedingManager`'s feed-drop, and `Tank`'s clean-hold behind it (mutually exclusive now — decor manipulation only works in Decorate Mode, care actions only work outside it). This resolves the "no tool-selection UI exists yet" ambiguity flagged as an open MVP limitation since task 4. "Exiting persists layout to PlayerData" has nothing to persist to yet (no save schema — task 8.1), so exit just toggles the mode off; the tank's live node state already reflects the layout.
 
-- [ ] **7.5 Quests panel** — UI wrapper around task 6.2 logic. **DoD/Test:** progress bars reflect live quest state; completed quests visually distinct.
+- [x] **7.5 Quests panel** — UI wrapper around task 6.2 logic. **DoD/Test:** progress bars reflect live quest state; completed quests visually distinct.
 
 ### 8. Save System
 
