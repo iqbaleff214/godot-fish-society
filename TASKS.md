@@ -108,17 +108,17 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 4. Care Actions
 
-- [ ] **4.1 Feed action**
+- [x] **4.1 Feed action**
   - **Description:** Player selects a food item, clicks/taps in tank, food drops (placeholder: small falling dot, `# TODO: asset — food sprite`), nearest fish with `hunger < threshold` swims to it and transitions through `Eat` state, per [GDD § 4.2](GDD.md#42-fish-the-pets).
   - **DoD:** Feeding restores hunger via `fish_stats.apply_feed()` (task 3.3) and emits `EventBus.fish_fed` signal.
   - **Test Case(s):** *(unit)* Test "nearest hungry fish" selection logic given mock fish list with positions/hunger values. *(manual)* Drop food near two fish of differing hunger, confirm hungriest/nearest-per-spec one goes first per documented tie-break rule.
 
-- [ ] **4.2 Clean action**
+- [x] **4.2 Clean action**
   - **Description:** Drag/wipe gesture (or simple click-and-hold) over tank glass restores a tank-level `cleanliness: float` stat, which feeds into every fish's `apply_cleanliness()` (task 3.3), per [GDD § 4.2](GDD.md#42-fish-the-pets).
   - **DoD:** Tank cleanliness visibly (placeholder: glass tint overlay `# TODO: asset — algae/dirt overlay`) decays over time and restores on clean action; cleaning-crew fish (task 1.3 flag) provide passive bonus regen.
   - **Test Case(s):** *(unit)* Test cleanliness decay-over-time and clean-action-restore math directly. *(manual)* Let tank sit until dirty overlay appears, clean it, confirm overlay clears and fish happiness ticks up.
 
-- [ ] **4.3 Pet/interact action**
+- [x] **4.3 Pet/interact action**
   - **Description:** Click directly on a fish → small happiness bump + placeholder reaction animation (`# TODO: asset — fish reaction anim`), transitions fish through `React` state.
   - **DoD:** Click hitbox matches fish sprite bounds reasonably; happiness bump applied exactly once per click (no double-fire).
   - **Test Case(s):** *(manual)* Click a fish repeatedly, confirm one bump per click and no state-machine lockup.

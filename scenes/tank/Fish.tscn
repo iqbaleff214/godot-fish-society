@@ -9,3 +9,7 @@ script = ExtResource("1_script")
 
 [node name="MoodIcon" type="Label" parent="."]
 position = Vector2(-12, -24)
+
+[node name="ClickArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]

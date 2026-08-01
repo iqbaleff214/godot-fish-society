@@ -64,6 +64,9 @@ func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: 
 		return
 	var mb := event as InputEventMouseButton
 	if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+		# Consume so this click doesn't also fall through to FeedingManager's
+		# catch-all _unhandled_input and drop food at the same spot.
+		get_viewport().set_input_as_handled()
 		_dragging = true
 		_drag_offset = get_global_mouse_position() - global_position
 	elif mb.pressed and mb.button_index == MOUSE_BUTTON_RIGHT:

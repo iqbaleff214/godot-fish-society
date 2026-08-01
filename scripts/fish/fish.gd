@@ -19,6 +19,8 @@ var display_name: String = ""
 
 @onready var visual: AnimatedSprite2D = $Visual  # TODO: asset — replace placeholder SpriteFrames animation
 @onready var mood_icon: Label = $MoodIcon  # TODO: asset — mood icon set (currently a text glyph placeholder)
+@onready var click_area: Area2D = $ClickArea
+@onready var collision_shape: CollisionShape2D = $ClickArea/CollisionShape2D
 
 var stats: FishStats
 var current_state: FishStateMachine.State = FishStateMachine.State.IDLE
@@ -27,9 +29,13 @@ var current_mood: FishMood.Mood = FishMood.Mood.NEUTRAL
 var _tank: Tank
 var _swim_target: Vector2 = Vector2.ZERO
 var _idle_timer: float = 0.0
+var _swim_target_is_food: bool = false
+var _target_food: Node2D = null
 
 
 func _ready() -> void:
+	if not click_area.input_event.is_connected(_on_click_area_input_event):
+		click_area.input_event.connect(_on_click_area_input_event)
 	if species != null:
 		setup(species)
 
@@ -49,6 +55,10 @@ func setup(fish_species: FishSpecies) -> void:
 		var frame_tex := visual.sprite_frames.get_frame_texture("default", 0)
 		if frame_tex != null and frame_tex.get_size() != Vector2.ZERO:
 			visual.scale = species.size / frame_tex.get_size()
+
+	var shape := RectangleShape2D.new()
+	shape.size = species.size
+	collision_shape.shape = shape
 
 	_refresh_mood()
 
@@ -71,6 +81,7 @@ func transition_to(new_state: FishStateMachine.State) -> bool:
 
 
 func _process(delta: float) -> void:
+	_update_stats(delta)
 	match current_state:
 		FishStateMachine.State.IDLE:
 			_idle_timer -= delta
@@ -80,9 +91,38 @@ func _process(delta: float) -> void:
 			_process_swim(delta)
 
 
+func _update_stats(delta: float) -> void:
+	if stats == null:
+		return
+	stats.decay(delta)
+	if _tank != null:
+		stats.apply_cleanliness(_tank.get_cleanliness())
+	_refresh_mood()
+
+
+## Redirects the fish toward food dropped by the feed action (TASKS.md 4.1).
+## food_node (optional) is freed and EventBus.fish_fed fires once the fish
+## actually arrives and eats — not immediately on click.
+func go_eat(food_position: Vector2, food_node: Node2D = null) -> void:
+	if current_state != FishStateMachine.State.SWIM:
+		transition_to(FishStateMachine.State.SWIM)
+	_swim_target = food_position
+	_swim_target_is_food = true
+	_target_food = food_node
+
+
 func _process_swim(delta: float) -> void:
 	if position.distance_to(_swim_target) <= ARRIVAL_DISTANCE:
-		transition_to(FishStateMachine.State.IDLE)
+		if _swim_target_is_food:
+			_swim_target_is_food = false
+			var food := _target_food
+			_target_food = null
+			if is_instance_valid(food):
+				food.queue_free()
+			eat()
+			EventBus.fish_fed.emit(self)
+		else:
+			transition_to(FishStateMachine.State.IDLE)
 		return
 	var previous := position
 	position = FishSteering.move_toward_point(position, _swim_target, SWIM_SPEED * delta)
@@ -91,6 +131,17 @@ func _process_swim(delta: float) -> void:
 	var dx := position.x - previous.x
 	if dx != 0.0:
 		visual.flip_h = dx < 0.0
+
+
+func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mb := event as InputEventMouseButton
+	if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+		# Consume so this click doesn't also fall through to FeedingManager's
+		# catch-all _unhandled_input and drop food at the same spot.
+		get_viewport().set_input_as_handled()
+		pet()
 
 
 func _pick_swim_target() -> void:

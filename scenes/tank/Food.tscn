@@ -1,0 +1,6 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="Food" type="Polygon2D"]
+editor_description = "TODO: asset — food sprite (placeholder flat-color dot; real \"falling\" motion/animation deferred)"
+polygon = PackedVector2Array(-3, -3, 3, -3, 3, 3, -3, 3)
+color = Color(0.9, 0.75, 0.3, 1)
