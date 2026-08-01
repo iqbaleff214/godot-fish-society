@@ -90,6 +90,7 @@ func place_decor_from_inventory(item: DecorItem, at_position: Vector2) -> Decora
 	decoration.position = at_position
 	decoration.setup(item)
 	decoration.removed.connect(_on_decoration_removed)
+	EventBus.decor_placed.emit(item)
 	return decoration
 
 

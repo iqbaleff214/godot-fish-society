@@ -67,6 +67,7 @@ func get_cleanliness() -> float:
 func clean_tank() -> void:
 	cleanliness_tracker.clean()
 	_refresh_dirt_overlay()
+	EventBus.tank_cleaned.emit()
 
 
 func _refresh_dirt_overlay() -> void:

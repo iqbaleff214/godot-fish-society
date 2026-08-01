@@ -169,6 +169,7 @@ func pet() -> void:
 		return
 	stats.apply_pet()
 	_refresh_mood()
+	EventBus.fish_petted.emit(self)
 	# TODO: asset — reaction animation/duration; placeholder returns to Idle immediately
 	transition_to(FishStateMachine.State.IDLE)
 

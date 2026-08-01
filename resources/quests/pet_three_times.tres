@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="QuestDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/quest_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "pet_3_times"
+title = "Pet your fish 3 times"
+tracked_event = 1
+target_count = 3
+reward_coins = 20
+reward_xp = 10

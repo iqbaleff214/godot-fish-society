@@ -148,15 +148,16 @@ Matches [GDD § 9 MVP scope](GDD.md#mvp-playable-core-loop-single-player-no-back
 
 ### 6. Progression
 
-- [ ] **6.1 Player level/XP system**
+- [x] **6.1 Player level/XP system**
   - **Description:** `PlayerData.xp`, `PlayerData.level`, XP awarded from care actions/quests per [GDD § 4.4](GDD.md#44-progression). `EventBus.level_up(new_level)` signal fires on threshold cross, used by shop (5.3) and future unlock gates.
   - **DoD:** Documented XP curve (even a simple linear/stepped table is fine for MVP) lives in a code comment; level-up signal fires exactly once per threshold crossed, even if a single XP grant crosses multiple levels at once.
   - **Test Case(s):** *(unit)* Test XP-to-level resolution with values that cross zero, one, and multiple level thresholds in a single grant.
 
-- [ ] **6.2 Basic quest list**
+- [x] **6.2 Basic quest list**
   - **Description:** Static checklist per [GDD § 4.4](GDD.md#44-progression) (e.g. "Feed 3 different fish species", "Place 3 new decorations"), tracked via `EventBus` signal listeners (`fish_fed`, item-placed, etc.), rewarding coins/XP on completion.
   - **DoD:** At least 3 quests defined as data (not hardcoded per-quest logic — reuse a generic `{event, target_count, reward}` shape where possible). Completing the tracked action updates quest progress and grants reward exactly once.
   - **Test Case(s):** *(unit)* Test quest-progress-tracking function against a sequence of mock events, assert completion fires once at target count and not again after.
+  - **Note:** 4 quests as `QuestDefinition` `.tres` data (matching `FishSpecies`/`DecorItem`'s pattern), tracking simple event counts rather than GDD's "3 *different* species" phrasing — the generic `{event, target_count, reward}` shape the DoD asks for doesn't naturally support a distinct-species set, so quest text was adjusted to match what's actually implemented ("Feed your fish 3 times") rather than overbuilding or misrepresenting it. Added `EventBus` signals `fish_petted`/`tank_cleaned`/`decor_placed` (didn't exist yet) so quests/XP can observe pet, clean, and decor-placement actions alongside the existing `fish_fed`.
 
 ### 7. UI / HUD
 
